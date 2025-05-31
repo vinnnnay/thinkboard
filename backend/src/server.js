@@ -1,6 +1,7 @@
 import express from 'express';
 const app = express();
 import cors from 'cors';
+import path from 'path';
 
 
 import connectDB  from './config/db.js';
@@ -9,15 +10,18 @@ import rateLimiter from './middleware/rateLimiter.js';
 
 
 const PORT = process.env.PORT || 5001;
+const __dirname = path.resolve(); // Get the current directory name
+
 
 
 // what is an Endpoint ==> an endpoint is a combination of url + http method that lets the client interact with the server
-
-app.use(cors({
-    origin: 'http://localhost:5173', // Allow requests from this origin
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+if(process.env.NODE_ENV !== 'production') {
+   app.use(cors({
+    origin: 'http://localhost:5173'  // Allow requests from this origin
+   
 }));
+
+}
 
 app.use(express.json()); // Middleware to parse JSON request bodies
 
@@ -25,6 +29,15 @@ app.use(rateLimiter);
 
 
 app.use('/api/notes' , notesRoute);
+
+if(process.env.NODE_ENV  === "production"){
+app.use(express.static(path.join(__dirname, '../frontend/dist'))); 
+
+app.get("*" , (req , res)=>{
+    res.sendFile(path.join(__dirname,   "../frontend "  ,  "dist" , "index.html" )); 
+})
+}
+// Serve static files from the 'public' directory
 
 // simple custom middleware 
 // app.use((req , res , next)=>{
