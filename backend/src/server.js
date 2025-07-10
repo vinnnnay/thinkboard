@@ -6,7 +6,7 @@ import path from 'path';
 
 import connectDB  from './config/db.js';
 import notesRoute from './route/notesRoute.js';
-import rateLimiter from './middleware/rateLimiter.js';
+// import rateLimiter from './middleware/rateLimiter.js';
 
 
 const PORT = process.env.PORT || 5001;
@@ -25,7 +25,7 @@ if(process.env.NODE_ENV !== 'production') {
 
 app.use(express.json()); // Middleware to parse JSON request bodies
 
-app.use(rateLimiter);
+// app.use(rateLimiter);
 
 
 app.use('/api/notes' , notesRoute);
